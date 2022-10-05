@@ -8,7 +8,9 @@ export class MainScene extends Phaser.Scene {
   private _bombs: Phaser.Physics.Arcade.Group;
   private _cursors: Phaser.Types.Input.Keyboard.CursorKeys;  
   private _scoreText: Phaser.GameObjects.Text;
+  private _gameOverText: Phaser.GameObjects.Text;
   private _score: integer = 0;
+  private _gameOver: boolean = false;
 
   constructor() {
     super({ key: 'main' });
@@ -29,20 +31,29 @@ export class MainScene extends Phaser.Scene {
   create() {
     this._cursors = this.input.keyboard.createCursorKeys();
 
-    this.add.image(400, 300, 'sky');//.setOrign(0,0) moves positioning - default is center
+    this.add.image(400, 300, 'sky');
     
-    this._platforms = this.createPlatforms();
-    
+    this._platforms = this.createPlatforms();    
     this._ranger.createRanger(this._cursors);
-
     this._stars = this.createStars();
+    this._bombs = this.physics.add.group();
 
     this.configureCollisions();
+
+    this._scoreText = this.add.text(16, 16, 'Score: ' + this._score, { fontSize: '32px', stroke: '#000', fontFamily: 'Arial' });    
+    this._gameOverText = this.add.text(400, 300, 'Game Over', { fontSize: '80px', stroke: '#000', fontFamily: 'Arial Black' })
+        .setOrigin(0.5) //0 topleft corner, .5 center, 1 bottom right   - this is starting draw point of the object
+        .setVisible(false);
   }
 
   override update() {
     if (this._ranger == null || this._platforms == null) { return; }    
 
+    if(this._gameOver && this._cursors.space.isDown){      
+      this.resetGame();
+      return;
+    } 
+    
     this._ranger.onUpdate();
   }
 
@@ -72,6 +83,15 @@ export class MainScene extends Phaser.Scene {
     this.physics.pause();
     this._ranger.sprite.setTint(0xff0000);
     this._ranger.sprite.anims.play('idle');
+    this._gameOverText.visible = true;
+    this._gameOver = true;
+    this.add.text(400, 400, 'Press [Space] to restart', { fontSize: '18px', stroke: '#000', fontFamily: 'Arial Black' });
+  }
+
+  private resetGame() {
+    this._gameOver = false;
+    this._score = 0;
+    this.scene.restart(); 
   }
 
   //private
@@ -81,9 +101,6 @@ export class MainScene extends Phaser.Scene {
 
     this.physics.add.overlap(this._ranger.sprite, this._stars, (p: any, s: any) => this.collectStar(p, s), null, this);
 
-    this._scoreText = this.add.text(16, 16, 'Score: ' + this._score, { fontSize: '32px', stroke: '#000' });
-
-    this._bombs = this.physics.add.group();
     this.physics.add.collider(this._bombs, this._platforms);
     this.physics.add.collider(this._ranger.sprite, this._bombs, this.hitBomb, null, this);    
   }
