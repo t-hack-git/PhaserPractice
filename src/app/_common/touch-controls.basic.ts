@@ -1,4 +1,4 @@
-export class TouchControls {
+export class BasicTouchControls {
 
     private _scene: Phaser.Scene;
     private _btnRadius: integer = 34;
@@ -14,7 +14,7 @@ export class TouchControls {
         this._scene = scene;
     }
 
-    public createTouchControls(): void {
+    public createTouchControls(): void {      
         this._scene.add.circle(this._btnLeftX, this._btnLeftY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
         this._scene.add.circle(this._btnRightX, this._btnRightY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
         this._scene.add.circle(this._btnUpX, this._btnUpY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
@@ -25,35 +25,34 @@ export class TouchControls {
     }
 
     public TouchLeft(): boolean {
-        let pointer = this._scene.input.pointer1;
-
-        if(pointer.isDown && this.OnButton(pointer.downX, pointer.downY, this._btnLeftX, this._btnLeftY)) {
-            return true;
-        }
-        
-        return false;
+        return this.isButtonPress(this._btnLeftX, this._btnLeftY);
     }
 
     public TouchRight(): boolean {
-        let pointer = this._scene.input.pointer1;
-        if(pointer.isDown && this.OnButton(pointer.downX, pointer.downY, this._btnRightX, this._btnRightY)) {
-            return true;
-        }
-        
-        return false;
+        return this.isButtonPress(this._btnRightX, this._btnRightY);
     }
 
     public TouchUp(): boolean {
-        let pointer = this._scene.input.pointer2;
-        if(pointer.isDown && this.OnButton(pointer.downX, pointer.downY, this._btnUpX, this._btnUpY)) {
+        return this.isButtonPress(this._btnUpX, this._btnUpY);
+    }
+
+    //private methods
+    private isButtonPress(btnX: integer, btnY: integer): boolean {
+        let pointer;
+        if(this._scene.input.pointer1.isDown) {
+            pointer = this._scene.input.pointer2;
+        } else {
+            pointer = this._scene.input.pointer1;
+        }
+
+        if(pointer.isDown && this.isPointerOnButton(pointer.downX, pointer.downY, btnX, btnY)) {
             return true;
         }
         
         return false;
     }
 
-    //private methods
-    private OnButton(pointerX: integer, pointerY: integer, btnX: integer, btnY: integer): boolean {
+    private isPointerOnButton(pointerX: integer, pointerY: integer, btnX: integer, btnY: integer): boolean {
         return pointerX >= (btnX - this._btnRadius) && pointerX <= (btnX + this._btnRadius) &&
             pointerY >= (btnY - this._btnRadius) && pointerY <= (btnY + this._btnRadius);
     }

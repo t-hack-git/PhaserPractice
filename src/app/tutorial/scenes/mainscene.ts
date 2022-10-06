@@ -1,4 +1,4 @@
-import { UserInputWrapper } from "src/app/_common/user-input-wrapper";
+import { UserInputWrapper } from "src/app/_common/user-input.wrapper";
 import { Ranger } from "../game-objects/ranger";
 
 export class MainScene extends Phaser.Scene {
@@ -11,7 +11,7 @@ export class MainScene extends Phaser.Scene {
   private _bombs: Phaser.Physics.Arcade.Group;
   private _scoreText: Phaser.GameObjects.Text;
   private _gameOverText: Phaser.GameObjects.Text;
-  
+
   private _score: integer = 0;
   private _gameOver: boolean = false;  
 
@@ -92,7 +92,7 @@ export class MainScene extends Phaser.Scene {
     this._ranger.sprite.anims.play('idle');
     this._gameOverText.visible = true;
     this._gameOver = true;
-    this.add.text(400, 400, 'Press [Jump] to restart', { fontSize: '18px', stroke: '#000', fontFamily: 'Arial Black' });
+    this.add.text(400, 400, `Press [ ${this._userInput.isTouch ? '^' : 'UP'} ] to restart`, { fontSize: '18px', stroke: '#000', fontFamily: 'Arial Black' });
   }
 
   private resetGame() {
@@ -101,7 +101,7 @@ export class MainScene extends Phaser.Scene {
     this.scene.restart(); 
   }
 
-  //private
+  //helpers
   private configureCollisions(): void {
     this.physics.add.collider(this._ranger.sprite, this._platforms);
     this.physics.add.collider(this._stars, this._platforms);

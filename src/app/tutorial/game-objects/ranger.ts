@@ -1,4 +1,4 @@
-import { UserInputWrapper } from "src/app/_common/user-input-wrapper";
+import { UserInputWrapper } from "src/app/_common/user-input.wrapper";
 
 export class Ranger {
 
@@ -27,7 +27,6 @@ export class Ranger {
 
       this.sprite = this._scene.physics.add.sprite(this._initX, this._initY, this._spriteKey);    
   
-      this.sprite.setBounce(0.2);
       this.sprite.setCollideWorldBounds(true);
       this.sprite.body.setGravityY(600);    
       this.sprite.setScale(1.5).refreshBody();
