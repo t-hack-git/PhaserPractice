@@ -33,7 +33,7 @@ export class MainScene extends Phaser.Scene {
 
   create() {
     this._cursors = this.input.keyboard.createCursorKeys();
-    this.input.addPointer(2);
+    this.input.addPointer(1);
 
     this.add.image(400, 300, 'sky');
     
@@ -49,7 +49,7 @@ export class MainScene extends Phaser.Scene {
         .setOrigin(0.5) //0 topleft corner, .5 center, 1 bottom right   - this is starting draw point of the object
         .setVisible(false);
 
-    if(!this.sys.game.device.os.desktop) {
+    if(this.sys.game.device.os.desktop) {
       this._touchControls.createTouchControls();
     }
   }
