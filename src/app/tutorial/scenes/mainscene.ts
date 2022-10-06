@@ -1,23 +1,24 @@
+import { UserInputWrapper } from "src/app/_common/user-input-wrapper";
 import { Ranger } from "../game-objects/ranger";
-import { TouchControls } from "../game-objects/touchcontrols";
 
 export class MainScene extends Phaser.Scene {
 
   private _ranger: Ranger;
-  private _touchControls: TouchControls;
+  private _userInput: UserInputWrapper;
+
   private _platforms: Phaser.Physics.Arcade.StaticGroup;
   private _stars: Phaser.Physics.Arcade.Group;
   private _bombs: Phaser.Physics.Arcade.Group;
-  private _cursors: Phaser.Types.Input.Keyboard.CursorKeys;  
   private _scoreText: Phaser.GameObjects.Text;
   private _gameOverText: Phaser.GameObjects.Text;
+  
   private _score: integer = 0;
-  private _gameOver: boolean = false;
+  private _gameOver: boolean = false;  
 
   constructor() {
     super({ key: 'main' });
     this._ranger = new Ranger(this, 100, 450);
-    this._touchControls = new TouchControls(this);
+    this._userInput = new UserInputWrapper(this);
   }
 
   preload() {
@@ -31,33 +32,31 @@ export class MainScene extends Phaser.Scene {
     this._ranger.loadAssets();
   }
 
-  create() {
-    this._cursors = this.input.keyboard.createCursorKeys();
-    this.input.addPointer(1);
-
+  create() {        
+    //background
     this.add.image(400, 300, 'sky');
     
+    //objects
     this._platforms = this.createPlatforms();    
-    this._ranger.createRanger(this._cursors, this._touchControls);
+    this._ranger.createRanger(this._userInput);
     this._stars = this.createStars();
     this._bombs = this.physics.add.group();
 
     this.configureCollisions();
 
+    //overlay
     this._scoreText = this.add.text(16, 16, 'Score: ' + this._score, { fontSize: '32px', stroke: '#000', fontFamily: 'Arial' });    
     this._gameOverText = this.add.text(400, 300, 'Game Over', { fontSize: '80px', stroke: '#000', fontFamily: 'Arial Black' })
         .setOrigin(0.5) //0 topleft corner, .5 center, 1 bottom right   - this is starting draw point of the object
         .setVisible(false);
 
-    if(!this.sys.game.device.os.desktop) {
-      this._touchControls.createTouchControls();
-    }
+    this._userInput.addControls();    
   }
 
   override update() {
     if (this._ranger == null || this._platforms == null) { return; }    
 
-    if(this._gameOver && this._cursors.up.isDown){      
+    if(this._gameOver && this._userInput.keyDownUp()) {      
       this.resetGame();
       return;
     } 

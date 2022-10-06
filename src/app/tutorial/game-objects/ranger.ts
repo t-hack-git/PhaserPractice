@@ -1,4 +1,4 @@
-import { TouchControls } from "./touchcontrols";
+import { UserInputWrapper } from "src/app/_common/user-input-wrapper";
 
 export class Ranger {
 
@@ -9,8 +9,7 @@ export class Ranger {
   private _spriteKey: string;
   
   private _scene: Phaser.Scene;
-  private _cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-  private _touchControls: TouchControls;
+  private _input: UserInputWrapper;
 
   constructor(scene: Phaser.Scene, initX: number, initY: number) {
     this._initX = initX;
@@ -23,9 +22,8 @@ export class Ranger {
     this._scene.load.spritesheet(this._spriteKey, 'ranger.png', { frameWidth: 32, frameHeight: 33 });
   }
 
-  public createRanger(cursors: Phaser.Types.Input.Keyboard.CursorKeys, touchControls: TouchControls) {
-      this._cursors = cursors;
-      this._touchControls = touchControls;
+  public createRanger(userInput: UserInputWrapper) {
+      this._input = userInput;
 
       this.sprite = this._scene.physics.add.sprite(this._initX, this._initY, this._spriteKey);    
   
@@ -57,11 +55,11 @@ export class Ranger {
     }
 
     public onUpdate() {
-      if (this._cursors.left.isDown || this._touchControls.TouchLeft()) {
+      if (this._input.keyDownLeft()) {
         this.sprite.setVelocityX(-180);
         this.sprite.anims.play('left', true);
       }
-      else if (this._cursors.right.isDown || this._touchControls.TouchRight()) {
+      else if (this._input.keyDownRight()) {
         this.sprite.setVelocityX(180);
         this.sprite.anims.play('right', true);
       }
@@ -70,7 +68,7 @@ export class Ranger {
         this.sprite.anims.play('idle', true);
       }
   
-      if ((this._cursors.up.isDown || this._touchControls.TouchJump()) && this.sprite.body.touching.down) {
+      if (this._input.keyDownUp() && this.sprite.body.touching.down) {
         this.sprite.setVelocityY(-550);
       }
     }
