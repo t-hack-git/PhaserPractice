@@ -33,7 +33,7 @@ export class MainScene extends Phaser.Scene {
 
   create() {
     this._cursors = this.input.keyboard.createCursorKeys();
-    this.input.addPointer(3);
+    this.input.addPointer(2);
 
     this.add.image(400, 300, 'sky');
     
