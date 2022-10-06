@@ -49,7 +49,7 @@ export class MainScene extends Phaser.Scene {
         .setOrigin(0.5) //0 topleft corner, .5 center, 1 bottom right   - this is starting draw point of the object
         .setVisible(false);
 
-    if(this.sys.game.device.os.desktop) {
+    if(!this.sys.game.device.os.desktop) {
       this._touchControls.createTouchControls();
     }
   }
