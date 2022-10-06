@@ -1,3 +1,5 @@
+import { TouchControls } from "./touchcontrols";
+
 export class Ranger {
 
   public sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody|null;
@@ -8,6 +10,7 @@ export class Ranger {
   
   private _scene: Phaser.Scene;
   private _cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  private _touchControls: TouchControls;
 
   constructor(scene: Phaser.Scene, initX: number, initY: number) {
     this._initX = initX;
@@ -20,8 +23,9 @@ export class Ranger {
     this._scene.load.spritesheet(this._spriteKey, 'ranger.png', { frameWidth: 32, frameHeight: 33 });
   }
 
-  public createRanger(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
+  public createRanger(cursors: Phaser.Types.Input.Keyboard.CursorKeys, touchControls: TouchControls) {
       this._cursors = cursors;
+      this._touchControls = touchControls;
 
       this.sprite = this._scene.physics.add.sprite(this._initX, this._initY, this._spriteKey);    
   
@@ -53,11 +57,11 @@ export class Ranger {
     }
 
     public onUpdate() {
-      if (this._cursors.left.isDown) {
+      if (this._cursors.left.isDown || this._touchControls.TouchLeft()) {
         this.sprite.setVelocityX(-180);
         this.sprite.anims.play('left', true);
       }
-      else if (this._cursors.right.isDown) {
+      else if (this._cursors.right.isDown || this._touchControls.TouchRight()) {
         this.sprite.setVelocityX(180);
         this.sprite.anims.play('right', true);
       }
@@ -66,7 +70,7 @@ export class Ranger {
         this.sprite.anims.play('idle', true);
       }
   
-      if (this._cursors.up.isDown && this.sprite.body.touching.down) {
+      if ((this._cursors.up.isDown || this._touchControls.TouchJump()) && this.sprite.body.touching.down) {
         this.sprite.setVelocityY(-550);
       }
     }

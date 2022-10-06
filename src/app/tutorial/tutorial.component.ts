@@ -18,6 +18,7 @@ export class TutorialComponent implements OnInit {
       height: 600,
       width: 800,
       scale: {
+        mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
       },
       scene: [MainScene],

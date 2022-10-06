@@ -1,9 +1,11 @@
 import { Ranger } from "../game-objects/ranger";
+import { TouchControls } from "../game-objects/touchcontrols";
 
 export class MainScene extends Phaser.Scene {
 
-  private _ranger: Ranger
-  private _platforms: Phaser.Physics.Arcade.StaticGroup  
+  private _ranger: Ranger;
+  private _touchControls: TouchControls;
+  private _platforms: Phaser.Physics.Arcade.StaticGroup;
   private _stars: Phaser.Physics.Arcade.Group;
   private _bombs: Phaser.Physics.Arcade.Group;
   private _cursors: Phaser.Types.Input.Keyboard.CursorKeys;  
@@ -15,6 +17,7 @@ export class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: 'main' });
     this._ranger = new Ranger(this, 100, 450);
+    this._touchControls = new TouchControls(this);
   }
 
   preload() {
@@ -30,11 +33,12 @@ export class MainScene extends Phaser.Scene {
 
   create() {
     this._cursors = this.input.keyboard.createCursorKeys();
+    this.input.addPointer(3);
 
     this.add.image(400, 300, 'sky');
     
     this._platforms = this.createPlatforms();    
-    this._ranger.createRanger(this._cursors);
+    this._ranger.createRanger(this._cursors, this._touchControls);
     this._stars = this.createStars();
     this._bombs = this.physics.add.group();
 
@@ -44,12 +48,16 @@ export class MainScene extends Phaser.Scene {
     this._gameOverText = this.add.text(400, 300, 'Game Over', { fontSize: '80px', stroke: '#000', fontFamily: 'Arial Black' })
         .setOrigin(0.5) //0 topleft corner, .5 center, 1 bottom right   - this is starting draw point of the object
         .setVisible(false);
+
+    if(!this.sys.game.device.os.desktop) {
+      this._touchControls.createTouchControls();
+    }
   }
 
   override update() {
     if (this._ranger == null || this._platforms == null) { return; }    
 
-    if(this._gameOver && this._cursors.space.isDown){      
+    if(this._gameOver && this._cursors.up.isDown){      
       this.resetGame();
       return;
     } 
@@ -85,7 +93,7 @@ export class MainScene extends Phaser.Scene {
     this._ranger.sprite.anims.play('idle');
     this._gameOverText.visible = true;
     this._gameOver = true;
-    this.add.text(400, 400, 'Press [Space] to restart', { fontSize: '18px', stroke: '#000', fontFamily: 'Arial Black' });
+    this.add.text(400, 400, 'Press [Jump] to restart', { fontSize: '18px', stroke: '#000', fontFamily: 'Arial Black' });
   }
 
   private resetGame() {
@@ -95,7 +103,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   //private
-  private configureCollisions() {
+  private configureCollisions(): void {
     this.physics.add.collider(this._ranger.sprite, this._platforms);
     this.physics.add.collider(this._stars, this._platforms);
 
@@ -131,5 +139,5 @@ export class MainScene extends Phaser.Scene {
     });
 
     return stars;
-  }
+  }  
 }
