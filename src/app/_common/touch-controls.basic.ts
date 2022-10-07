@@ -14,8 +14,7 @@ export class BasicTouchControls {
         this._scene = scene;
     }
 
-    public createTouchControls(): void {              
-        this._scene.input.addPointer(2);
+    public createTouchControls(): void {                      
         this._scene.add.circle(this._btnLeftX, this._btnLeftY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
         this._scene.add.circle(this._btnRightX, this._btnRightY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
         this._scene.add.circle(this._btnUpX, this._btnUpY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
@@ -41,9 +40,9 @@ export class BasicTouchControls {
     private isButtonPress(btnX: integer, btnY: integer): boolean {
         let pointer;
         if(this._scene.input.mousePointer.isDown) {
-            pointer = this._scene.input.mousePointer;
-        } else {
             pointer = this._scene.input.pointer1;
+        } else {
+            pointer = this._scene.input.mousePointer;
         }
 
         if(pointer.isDown && this.isPointerOnButton(pointer.downX, pointer.downY, btnX, btnY)) {
