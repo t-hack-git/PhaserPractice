@@ -1,5 +1,7 @@
 export class BasicTouchControls {
 
+    private _usingLeftRight = false;
+
     private _scene: Phaser.Scene;
     private _btnRadius: integer = 34;
     private _btnLeftX: integer = 40;
@@ -27,25 +29,30 @@ export class BasicTouchControls {
     }
 
     public TouchLeft(): boolean {
-        return this.isButtonPress(this._btnLeftX, this._btnLeftY);
+        return this.isButtonPress(this._scene.input.pointer1, this._btnLeftX, this._btnLeftY);
     }
 
     public TouchRight(): boolean {
-        return this.isButtonPress(this._btnRightX, this._btnRightY);
+        return this.isButtonPress(this._scene.input.pointer1, this._btnRightX, this._btnRightY);
     }
 
     public TouchUp(): boolean {
-        return this.isButtonPress(this._btnUpX, this._btnUpY);
+        return this.isButtonPress(this._scene.input.pointer2, this._btnUpX, this._btnUpY);
     }
 
     //private methods
-    private isButtonPress(btnX: integer, btnY: integer): boolean {
-        let pointer = this._scene.input.activePointer;
-        //if(this._scene.input.pointer1.isDown) {
-        //    pointer = this._scene.input.pointer2;
-        //} else {
-        //    pointer = this._scene.input.pointer1;
-        //}
+    private isButtonPress(preferredPointer: Phaser.Input.Pointer, btnX: integer, btnY: integer): boolean {      
+        let pointer = preferredPointer;  
+
+        if(this._scene.input.pointer1.isDown) {
+            this._usingLeftRight = true;
+        } else {
+            this._usingLeftRight = false;
+        }
+
+        if(preferredPointer == this._scene.input.pointer2 && !this._usingLeftRight) {
+            pointer = this._scene.input.pointer1;
+        }
 
         if(pointer.isDown && this.isPointerOnButton(pointer.downX, pointer.downY, btnX, btnY)) {
             return true;
