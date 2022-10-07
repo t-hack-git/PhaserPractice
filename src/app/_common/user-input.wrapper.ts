@@ -16,7 +16,7 @@ export class UserInputWrapper {
     addControls() {
         this._cursors = this._scene.input.keyboard.createCursorKeys();        
 
-        if(this._scene.sys.game.device.os.desktop) {            
+        if(!this._scene.sys.game.device.os.desktop) {            
             this._touchControls.createTouchControls();  
             this.isTouch = true;          
         }
