@@ -1,14 +1,14 @@
 export class BasicTouchControls {
 
     private _scene: Phaser.Scene;
-    private _btnRadius: integer = 34;
-    private _btnLeftX: integer = 40;
-    private _btnRightX: integer = 174;
+    private _btnRadius: integer = 54;
+    private _btnLeftX: integer = 60;
+    private _btnRightX: integer = 204;
     private _btnUpX: integer = 740;
 
-    private _btnLeftY: integer = 555;
-    private _btnRightY: integer = 555;
-    private _btnUpY: integer = 555;
+    private _btnLeftY: integer = 535;
+    private _btnRightY: integer = 535;
+    private _btnUpY: integer = 535;
 
     constructor(scene: Phaser.Scene){
         this._scene = scene;
@@ -17,48 +17,49 @@ export class BasicTouchControls {
     public createTouchControls(): void {  
         this._scene.input.addPointer(1);
         
-        this._scene.add.circle(this._btnLeftX, this._btnLeftY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
-        this._scene.add.circle(this._btnRightX, this._btnRightY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
-        this._scene.add.circle(this._btnUpX, this._btnUpY, this._btnRadius, 0x09090, 1).setStrokeStyle(2, 0X000);
+        this._scene.add.circle(this._btnLeftX, this._btnLeftY, this._btnRadius, 0x09090, .5).setStrokeStyle(2, 0X000);
+        this._scene.add.circle(this._btnRightX, this._btnRightY, this._btnRadius, 0x09090, .5).setStrokeStyle(2, 0X000);
+        this._scene.add.circle(this._btnUpX, this._btnUpY, this._btnRadius, 0x09090, .5).setStrokeStyle(2, 0X000);
     
-        this._scene.add.text(22, 528, "<", { fontSize: '50px', stroke: '#000', fontFamily: 'Arial Black' });
-        this._scene.add.text(160, 528, ">", { fontSize: '50px', stroke: '#000', fontFamily: 'Arial Black' });
-        this._scene.add.text(721, 530, "^", { fontSize: '60px', stroke: '#000', fontFamily: 'Arial Black' });
+        this._scene.add.text(32, 508, "<", { fontSize: '60px', stroke: '#000', fontFamily: 'Arial Black' });
+        this._scene.add.text(190, 508, ">", { fontSize: '60px', stroke: '#000', fontFamily: 'Arial Black' });
+        this._scene.add.text(711, 500, "^", { fontSize: '80px', stroke: '#000', fontFamily: 'Arial Black' });
     }
 
     public TouchLeft(): boolean {
-        return this.isButtonPress(InputSide.ScreenLeft, this._btnLeftX, this._btnLeftY);
+        return this.isButtonPress(InputTargetSide.ScreenLeft, this._btnLeftX, this._btnLeftY);
     }
 
     public TouchRight(): boolean {
-        return this.isButtonPress(InputSide.ScreenLeft, this._btnRightX, this._btnRightY);
+        return this.isButtonPress(InputTargetSide.ScreenLeft, this._btnRightX, this._btnRightY);
     }
 
     public TouchUp(): boolean {
-        return this.isButtonPress(InputSide.ScreenRight, this._btnUpX, this._btnUpY);
+        return this.isButtonPress(InputTargetSide.ScreenRight, this._btnUpX, this._btnUpY);
     }
 
     //private methods
-    private isButtonPress(inputSide: InputSide, btnX: integer, btnY: integer): boolean {      
+    private isButtonPress(inputSide: InputTargetSide, btnX: integer, btnY: integer): boolean {      
 
+        let buffer:integer = 200;
         let p1 = this._scene.input.pointer1;
         let p2 = this._scene.input.pointer2;
 
         let pointer = null;
-        if(inputSide == InputSide.ScreenRight) {
-            if(p1.isDown && p1.downX >= this._btnUpX) {
+        if(inputSide == InputTargetSide.ScreenRight) {
+            if(p1.isDown && p1.downX >= this._btnUpX - buffer) {
                 pointer = p1;
             } 
 
-            if(p2.isDown && p2.downX >= this._btnUpX) {
+            if(p2.isDown && p2.downX >= this._btnUpX - buffer) {
                 pointer = p2;
             }
-        } else if(inputSide == InputSide.ScreenLeft) {
-            if(p1.isDown && p1.downX <= this._btnRightX) {
+        } else if(inputSide == InputTargetSide.ScreenLeft) {
+            if(p1.isDown && p1.downX <= this._btnRightX + this._btnRadius + buffer) {
                 pointer = p1;
             } 
             
-            if(p2.isDown && p2.downX <= this._btnRightX) {
+            if(p2.isDown && p2.downX <= this._btnRightX + this._btnRadius + buffer) {
                 pointer = p2
             }
         }
@@ -78,7 +79,7 @@ export class BasicTouchControls {
     }
 }
 
-enum InputSide {
+enum InputTargetSide {
     ScreenLeft,
     ScreenRight
 }
