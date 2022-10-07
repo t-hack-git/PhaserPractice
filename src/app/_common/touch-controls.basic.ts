@@ -40,22 +40,30 @@ export class BasicTouchControls {
 
     //private methods
     private isButtonPress(inputSide: InputSide, btnX: integer, btnY: integer): boolean {      
-        if(this._scene.input.pointer1.isDown || this._scene.input.pointer2.isDown) {            
-            let pointer;
-            if(inputSide == InputSide.ScreenRight) {
-                if(this._scene.input.pointer1.x >= this._btnUpX) {
-                    pointer = this._scene.input.pointer1;
-                } else {
-                    pointer = this._scene.input.pointer2
-                }
-            } else {
-                if(this._scene.input.pointer2.x <= this._btnRightX) {
-                    pointer = this._scene.input.pointer2;
-                } else {
-                    pointer = this._scene.input.pointer1
-                }
-            }
 
+        let p1 = this._scene.input.pointer1;
+        let p2 = this._scene.input.pointer2;
+
+        let pointer = null;
+        if(inputSide == InputSide.ScreenRight) {
+            if(p1.isDown && p1.downX >= this._btnUpX) {
+                pointer = p1;
+            } 
+
+            if(p2.isDown && p2.downX >= this._btnUpX) {
+                pointer = p2;
+            }
+        } else if(inputSide == InputSide.ScreenLeft) {
+            if(p1.isDown && p1.downX <= this._btnRightX) {
+                pointer = p1;
+            } 
+            
+            if(p2.isDown && p2.downX <= this._btnRightX) {
+                pointer = p2
+            }
+        }
+
+        if(pointer) {
             if(this.isPointerOnButton(pointer.downX, pointer.downY, btnX, btnY)) {
                 return true;
             }
