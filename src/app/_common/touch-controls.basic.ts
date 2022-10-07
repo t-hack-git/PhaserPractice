@@ -40,12 +40,12 @@ export class BasicTouchControls {
 
     //private methods
     private isButtonPress(btnX: integer, btnY: integer): boolean {
-        let pointer;
-        if(this._scene.input.pointer1.isDown) {
-            pointer = this._scene.input.pointer2;
-        } else {
-            pointer = this._scene.input.pointer1;
-        }
+        let pointer = this._scene.input.activePointer;
+        //if(this._scene.input.pointer1.isDown) {
+        //    pointer = this._scene.input.pointer2;
+        //} else {
+        //    pointer = this._scene.input.pointer1;
+        //}
 
         if(pointer.isDown && this.isPointerOnButton(pointer.downX, pointer.downY, btnX, btnY)) {
             return true;
