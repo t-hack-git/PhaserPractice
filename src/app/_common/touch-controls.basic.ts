@@ -47,25 +47,25 @@ export class BasicTouchControls {
 
         let pointer = null;
         if(inputSide == InputTargetSide.ScreenRight) {
-            if(p1.isDown && p1.downX >= this._btnUpX - buffer) {
+            if(p1.isDown && p1.x >= this._btnUpX - buffer) {
                 pointer = p1;
             } 
 
-            if(p2.isDown && p2.downX >= this._btnUpX - buffer) {
+            if(p2.isDown && p2.x >= this._btnUpX - buffer) {
                 pointer = p2;
             }
         } else if(inputSide == InputTargetSide.ScreenLeft) {
-            if(p1.isDown && p1.downX <= this._btnRightX + this._btnRadius + buffer) {
+            if(p1.isDown && p1.x <= this._btnRightX + this._btnRadius + buffer) {
                 pointer = p1;
             } 
             
-            if(p2.isDown && p2.downX <= this._btnRightX + this._btnRadius + buffer) {
+            if(p2.isDown && p2.x <= this._btnRightX + this._btnRadius + buffer) {
                 pointer = p2
             }
         }
 
         if(pointer) {
-            if(this.isPointerOnButton(pointer.downX, pointer.downY, btnX, btnY)) {
+            if(this.isPointerOnButton(pointer.x, pointer.downY, btnX, btnY)) {
                 return true;
             }
         }
